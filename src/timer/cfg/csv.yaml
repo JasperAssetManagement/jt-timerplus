@@ -1,0 +1,16 @@
+config :  
+ header : 0
+ delimiter : ',' 
+ encoding : 'gbk' 
+ skiprows : 0 #跳过0行
+
+import_data :
+  job_id : job_id
+  job_name : job_name
+  job_type : job_type
+  job_args : job_args
+  job_address : job_address
+  triggers : triggers
+  trigger_args : trigger_args
+  is_trade_date : is_trade_date
+  market : market
