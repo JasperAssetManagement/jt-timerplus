@@ -1,1 +1,2 @@
-job_id,job_name,job_type,job_args,job_address,triggers,trigger_args,is_trade_date,market
+job_id,job_name,job_type,job_args,job_address,trigger,trigger_args,is_trade_date,market
+1,abc,matlab,"1,2",,cron,{'hour':3},Y,SZ
