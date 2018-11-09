@@ -1,2 +1,4 @@
-job_id,job_name,job_type,job_args,job_address,trigger,trigger_args,is_trade_date,market
-1,abc,matlab,"1,2",,cron,{'hour':3},Y,SZ
+job_id;job_name;job_type;job_args;job_address;trigger;trigger_args;is_trade_date;exchange
+'1';jtapp.test_timer;python;{"a_":1,"b_":2};;cron;{"hour":"14","minute":"30","second":"0"};Y;sz
+'2';test_timer_script;matlab;;;cron;{"hour":"14","minute":"30","second":"10"};Y;sz
+'3';Utilities.test_timer_classmethod;matlab;[3,4];;cron;{"hour":"14","minute":"30","second":"20"};Y;sz

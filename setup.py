@@ -6,21 +6,25 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='timer',
+    name='timerplus',
     version='0.0.1',
-    description="timer",
+    description="timer plus",
     author='Neo',
     author_email='neo.lin@jaspercapital.com',
+    python_requires='>=3.6',
     # namespace_packages=['jt'],
     packages=find_packages('src'),
     package_dir={"": "src"},
     package_data={
-        'timer': [
-            'cfg/*.yaml',           
-          
+        'timerplus': [
+            'cfg/*.yaml'
         ]        
     },
-    install_requires=[  
+    setup_requires=[
+        'setuptools_scm',
+        'pip >= 9.0.0'
+    ],
+    install_requires=[
         'apscheduler',
         'jt'
     ],
