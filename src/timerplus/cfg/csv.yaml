@@ -9,7 +9,6 @@ import_data :
   job_name : job_name
   job_type : job_type
   job_args : job_args
-  job_address : job_address
   trigger : trigger
   trigger_args : trigger_args
   is_trade_date : is_trade_date

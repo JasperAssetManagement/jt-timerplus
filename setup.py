@@ -19,11 +19,7 @@ setup(
         'timerplus': [
             'cfg/*.yaml'
         ]        
-    },
-    setup_requires=[
-        'setuptools_scm',
-        'pip >= 9.0.0'
-    ],
+    },    
     install_requires=[
         'apscheduler',
         'jt'
