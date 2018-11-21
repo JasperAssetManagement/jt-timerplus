@@ -95,7 +95,7 @@ class TimerPlus(object):
         today_ = datetime2string(datetime.datetime.now(), r'%Y%m%d')
 
         if is_trade_date_.lower()=='y':            
-            if ~calendar.is_trading_date(today_, exchange_):
+            if not calendar.is_trading_date(today_, exchange_):
                 return
             
         if job_type_=='matlab':
