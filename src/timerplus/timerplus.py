@@ -9,8 +9,9 @@ import json
 import datetime
 import logging
 import math
-import matlab.engine
+# import matlab.engine
 import importlib
+from jt.utils.db.loader import PgSQLLoader
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from enum import Enum
@@ -23,7 +24,7 @@ from jt.utils.calendar.api_calendar import TradeCalendarDB
 
 logging.basicConfig()
 calendar=TradeCalendarDB()
-JOBTYPE = ['matlab', 'python', 'cmd']
+JOBTYPE = ['matlab', 'python', 'cmd', 'sqlprocedure']
 
 JobContainer = {
     'csv' : ['filepath'],
@@ -60,7 +61,7 @@ class TimerPlus(object):
             _dbtabale = kw['table']
 
             jobs = _con.read(f'''select job_id,job_name,job_type,job_args,
-                                trigger,trigger_args,is_trade_date,exchange from {_dbtabale}''')
+                                trigger,trigger_args,is_trade_date,exchange,sqlprocedure_db,sqlprocedure_type from {_dbtabale}''')
             
             print(jobs.head())
         
@@ -73,7 +74,7 @@ class TimerPlus(object):
                 t_job_args = None
     
             self._sche.add_job(func=self._distributor,
-                               args=[getattr(row, 'job_type'), getattr(row, 'job_name'),
+                               args=[getattr(row, 'sqlprocedure_db'),getattr(row, 'sqlprocedure_type'),getattr(row, 'job_type'), getattr(row, 'job_name'),
                                      t_job_args, getattr(row, 'is_trade_date'),
                                      getattr(row, 'exchange')],
                                trigger=getattr(row, 'trigger'),
@@ -91,7 +92,7 @@ class TimerPlus(object):
         self._sche.shutdown()
 
 
-    def _distributor(self, job_type_=None, job_name_=None, job_args_=None, is_trade_date_='N', exchange_='sz'):        
+    def _distributor(self, sqlprocedure_db_=None, sqlprocedure_type_=None,job_type_=None, job_name_=None, job_args_=None, is_trade_date_='n', exchange_='sz'):
         today_ = datetime2string(datetime.datetime.now(), r'%Y%m%d')
 
         if is_trade_date_.lower()=='y':            
@@ -99,28 +100,29 @@ class TimerPlus(object):
                 return
             
         if job_type_=='matlab':
-            self.__matlab_executor(job_name_, job_args_)
+            # self.__matlab_executor(job_name_, job_args_)
+            print('test')
         elif job_type_=='python':
             self.__python_executor(job_name_, job_args_)                 
         elif job_type_=='sqlprocedure':
-            pass
+            self.__sqlprocedure_executor(sqlprocedure_db_, sqlprocedure_type_, job_name_, job_args_)
         elif job_type_=='cmd':
             pass
 
 
-    def __matlab_executor(self, job_name_, job_args_):         
-        """
-        execute the user defined matlab function/scripts
-        """       
-        eng = matlab.engine.start_matlab()
-        func = getattr(eng, job_name_)
-        assert func is not None, f'job_name : {job_name_} is not found!'
-        if job_args_ is None:
-            func(nargout=0)
-        else:
-            func(*job_args_, nargout=0)
-            
-        eng.quit()
+    # def __matlab_executor(self, job_name_, job_args_):
+    #     """
+    #     execute the user defined matlab function/scripts
+    #     """
+    #     eng = matlab.engine.start_matlab()
+    #     func = getattr(eng, job_name_)
+    #     assert func is not None, f'job_name : {job_name_} is not found!'
+    #     if job_args_ is None:
+    #         func(nargout=0)
+    #     else:
+    #         func(*job_args_, nargout=0)
+    #
+    #     eng.quit()
 
     def __python_executor(self, job_name_, job_args_):
         assert isinstance(job_name_, str), 'job_name_ should be a String!'
@@ -140,5 +142,15 @@ class TimerPlus(object):
     def __cmd_executor(self, *args, **kw):
         pass
 
-    def __sqlprocedure_executor(self, *args, **kw):
-        pass
+    def __sqlprocedure_executor(self, sqlprocedure_db_,sqlprocedure_type_,job_name_,job_args_):
+        pgl = PgSQLLoader(sqlprocedure_db_)
+        if sqlprocedure_type_=='return':
+            pgl.execute(('declare @mysum int execute @mysum={} {} print @mysum'.format(job_name_,job_args_)).replace('[','').replace(']',''))
+        elif sqlprocedure_type_=='output':
+            pgl.execute(('declare @mysum int execute {} {},@mysum output print @mysum'.format(job_name_,job_args_)).replace('[','').replace(']',''))
+        else:
+            if job_args_ is None:
+                pgl.execute(('execute {}'.format(job_name_)).replace('[', '').replace(']', ''))
+            else:
+                pgl.execute(('execute {} {}'.format(job_name_, job_args_)).replace('[', '').replace(']', ''))
+

@@ -1,0 +1,2 @@
+job_id;job_name;job_type;job_args;trigger;trigger_args;is_trade_date;exchange;sqlprocedure_db;sqlprocedure_type
+"1';'test_sum';'sqlprocedure';(11£¬ 22);'cron';{""hour"":""16""£¬minute:""36""£¬second:""10""};n;;'trade';'return';;"
