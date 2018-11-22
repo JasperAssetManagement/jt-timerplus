@@ -1,4 +1,6 @@
-job_id;job_name;job_type;job_args;trigger;trigger_args;is_trade_date;exchange
-'1';jtapp.app.test_timer.plusnum;python;{"a_":1,"b_":2};cron;{"hour":"17","minute":"43","second":"0"};N;sz
-'2';test_timer_script;matlab;;cron;{"hour":"15","minute":"09","second":"0"};N;sz
-'3';Utilities.test_timer_classmethod;matlab;[3,4];cron;{"hour":"15","minute":"09","second":"10"};N;sz
+job_id;job_name;job_type;job_args;trigger;trigger_args;is_trade_date;exchange;sqlprocedure_db;sqlprocedure_type
+'1';testPy;sqlprocedure;;cron;{"hour":"10","minute":"32","second":"0"};N;sz;trade;
+'2';testPy;sqlprocedure;[3,4];cron;{"hour":"10","minute":"32","second":"0"};N;sz;trade;
+'3';testPy;sqlprocedure;[3,4];cron;{"hour":"10","minute":"32","second":"0"};N;sz;trade;return
+'4';testPy;sqlprocedure;[3,4];cron;{"hour":"10","minute":"32","second":"0"};N;sz;trade;output
+
