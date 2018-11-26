@@ -11,14 +11,11 @@ import logging
 import math
 import matlab.engine
 import importlib
-from jt.utils.db.loader import PgSQLLoader
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from enum import Enum
 from jt.utils.db import PgSQLLoader
 from jt.utils.fs.utils import Utils
 from jt.utils.misc import read_yaml
-from jt.utils.misc.log import Logger
 from jt.utils.time.format import datetime2string
 from jt.utils.calendar.api_calendar import TradeCalendarDB
 
@@ -61,9 +58,7 @@ class TimerPlus(object):
             _dbtabale = kw['table']
 
             jobs = _con.read(f'''select job_id,job_name,job_type,job_args,
-                                trigger,trigger_args,is_trade_date,exchange,sqlprocedure_db,sqlprocedure_type from {_dbtabale}''')
-            
-            print(jobs.head())
+                                trigger,trigger_args,is_trade_date,exchange from {_dbtabale}''')
         
         # loop adding job         
         for row in jobs.itertuples(): 
@@ -74,7 +69,7 @@ class TimerPlus(object):
                 t_job_args = None
     
             self._sche.add_job(func=self._distributor,
-                               args=[getattr(row, 'sqlprocedure_db'),getattr(row, 'sqlprocedure_type'),getattr(row, 'job_type'), getattr(row, 'job_name'),
+                               args=[getattr(row, 'job_type'), getattr(row, 'job_name'),
                                      t_job_args, getattr(row, 'is_trade_date'),
                                      getattr(row, 'exchange')],
                                trigger=getattr(row, 'trigger'),
@@ -92,19 +87,19 @@ class TimerPlus(object):
         self._sche.shutdown()
 
 
-    def _distributor(self, sqlprocedure_db_=None, sqlprocedure_type_=None,job_type_=None, job_name_=None, job_args_=None, is_trade_date_='n', exchange_='sz'):
-        today_ = datetime2string(datetime.datetime.now(), r'%Y%m%d')
+    def _distributor(self, job_type_=None, job_name_=None, job_args_=None, is_trade_date_='n', exchange_='sz'):
+        today_ = datetime2string(datetime.datetime.now(), r'%Y%m%d')     
 
         if is_trade_date_.lower()=='y':            
-            if ~calendar.is_trading_date(today_, exchange_):
-                return
-            
+            if not calendar.is_trading_date(today_, exchange_):
+                return            
+     
         if job_type_=='matlab':
             self.__matlab_executor(job_name_, job_args_)
         elif job_type_=='python':
             self.__python_executor(job_name_, job_args_)                 
-        elif job_type_=='sqlprocedure':
-            self.__sqlprocedure_executor(sqlprocedure_db_, sqlprocedure_type_, job_name_, job_args_)
+        elif job_type_=='sqlprocedure':             
+            self.__sqlprocedure_executor(job_name_, job_args_)
         elif job_type_=='cmd':
             pass
 
@@ -141,15 +136,8 @@ class TimerPlus(object):
     def __cmd_executor(self, *args, **kw):
         pass
 
-    def __sqlprocedure_executor(self, sqlprocedure_db_,sqlprocedure_type_,job_name_,job_args_):
-        pgl = PgSQLLoader(sqlprocedure_db_)
-        if sqlprocedure_type_=='return':
-            pgl.execute(('declare @mysum int execute @mysum={} {} print @mysum'.format(job_name_,job_args_)).replace('[','').replace(']',''))
-        elif sqlprocedure_type_=='output':
-            pgl.execute(('declare @mysum int execute {} {},@mysum output print @mysum'.format(job_name_,job_args_)).replace('[','').replace(']',''))
-        else:
-            if job_args_ is None:
-                pgl.execute(('execute {}'.format(job_name_)).replace('[', '').replace(']', ''))
-            else:
-                pgl.execute(('execute {} {}'.format(job_name_, job_args_)).replace('[', '').replace(']', ''))
-
+    def __sqlprocedure_executor(self, job_name_, job_args_):
+        assert 'db_env' in job_args_, 'db_env should be in job_args'
+        pgl = PgSQLLoader(job_args_.get('db_env'))
+        pgl.call_procedure(job_name_, job_args_.get('args', []), job_args_.get('proc_has_return', 'n'))
+     

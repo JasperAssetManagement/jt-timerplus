@@ -1,20 +1,25 @@
 import importlib
 import os
+import datetime
 
+
+from jt.utils.calendar.api_calendar import TradeCalendarDB
+from jt.utils.time.format import datetime2string
 from timerplus.timerplus import TimerPlus
+
 
 if __name__ == "__main__":
     t = TimerPlus()
 
-    # job_container_='csv'
-    # filepath=r'C:\Users\jasper\PycharmProjects\timerplus\test\joblist.csv'
-    # t.add_jobs(job_container_=job_container_, filepath=filepath)
+    job_container_='csv'
+    filepath=r'E:\timerplus\test\joblist.csv'
+    t.add_jobs(job_container_=job_container_, filepath=filepath)
 
 
-    job_container_='pgsql'
-    db_cfg='jtder'
-    table='timer_joblist'
-    t.add_jobs(job_container_=job_container_, db_cfg=db_cfg, table=table)
+    # job_container_='pgsql'
+    # db_cfg='jtder'
+    # table='timer_joblist'
+    # t.add_jobs(job_container_=job_container_, db_cfg=db_cfg, table=table)
 
     t.print_jobs()
     t.start()
