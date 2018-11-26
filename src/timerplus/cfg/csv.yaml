@@ -13,3 +13,5 @@ import_data :
   trigger_args : trigger_args
   is_trade_date : is_trade_date
   exchange : exchange
+  sqlprocedure_db : sqlprocedure_db
+  sqlprocedure_type : sqlprocedure_type
