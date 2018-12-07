@@ -55,7 +55,7 @@ class TimerPlus(object):
                 kw['filepath']), f"{kw['filepath']} is not existed."
 
             config_dict_ = read_yaml(
-                config_name='cfg/csv.yaml', package='timerplus')
+                config_name='cfg/csv.yaml', package='jt.timerplus')
             jobs = Utils.read_csv(kw['filepath'], config_dict_.get(
                 'import_data'), **config_dict_.get('config'))
 
