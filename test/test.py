@@ -5,7 +5,7 @@ import datetime
 
 from jt.utils.calendar.api_calendar import TradeCalendarDB
 from jt.utils.time.format import datetime2string
-from timerplus.timerplus import TimerPlus
+from jt.timerplus.timerplus import TimerPlus
 
 
 if __name__ == "__main__":

@@ -1,3 +1,5 @@
 job_id;job_name;job_type;job_args;trigger;trigger_args;is_trade_date;exchange
-'1';testPy;sqlprocedure;{"db_env":"trade"};cron;{"hour":"14","minute":"23","second":"0"};y;sz
-'2';test_sum;sqlprocedure;{"db_env":"trade","args":[1,1]};cron;{"hour":"14","minute":"23","second":"05"};y;sz
+'1';jt.app.business.daily_workflow.before_trade_check;python;;cron;{"hour":"9","minute":"30","second":"00"};y;sz
+'2';jt.app.business.daily_workflow.before_trade_etl;python;;cron;{"hour":"9","minute":"00","second":"00"};y;sz
+'3';jt.app.business.daily_workflow.update_data_at_night;python;;cron;{"hour":"20","minute":"00","second":"00"};y;sz
+'4';jt.app.business.etl_data.download_mail_att;python;;cron;{"hour":"16","minute":"30","second":"00"};y;sz
