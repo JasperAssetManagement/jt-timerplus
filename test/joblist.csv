@@ -1,8 +1,8 @@
 job_id;job_name;job_type;job_args;trigger;trigger_args;is_trade_date;exchange
-'1';jt.app.business.daily_workflow.before_trade_etl;python;;cron;{"hour":"9","minute":"00","second":"00"};y;sz
-'2';jt.app.business.daily_workflow.before_trade_check;python;;cron;{"hour":"9","minute":"30","second":"00"};y;sz
-'3';jt.app.business.daily_workflow.after_trade_etl;python;;cron;{"hour":"17","minute":"00","second":"00"};y;sz
-'4';jt.app.business.daily_workflow.after_trade_check;python;;cron;{"hour":"17","minute":"10","second":"00"};y;sz
+'1';jt.app.business.daily_workflow.before_trade_etl;python;;cron;{"hour":"8","minute":"30","second":"00"};y;sz
+'2';jt.app.business.daily_workflow.before_trade_check;python;;cron;{"hour":"9","minute":"25","second":"00"};y;sz
+'3';jt.app.business.daily_workflow.after_trade_check;python;;cron;{"hour":"16","minute":"45","second":"00"};y;sz
+'4';jt.app.business.daily_workflow.after_trade_etl;python;;cron;{"hour":"16","minute":"30","second":"00"};y;sz
 '5';jt.app.business.daily_workflow.at_night_etl;python;;cron;{"hour":"20","minute":"30","second":"00"};y;sz
-'6';jt.app.business.daily_workflow.after_trade_cal;python;;cron;{"hour":"17","minute":"40","second":"00"};y;sz
-'7';jt.app.business.daily_workflow.download_check_hk_pos;python;;cron;{"hour":"22","minute":"30","second":"00"};y;sz
+'6';ps.init_data.download_daily_data;python;{"is_overwrite_":"True"};cron;{"hour":"22","minute":"30","second":"00"};y;sz
+'7';jt.app.business.daily_workflow.at_night_cal;python;;cron;{"hour":"23","minute":"00","second":"00"};y;sz

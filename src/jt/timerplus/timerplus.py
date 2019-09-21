@@ -155,11 +155,14 @@ class TimerPlus(object):
         pgl.call_procedure(job_name_, job_args_.get(
             'args', []), job_args_.get('proc_has_return', 'n'))
 
-    def __my_listener(self, event):
+    def __my_listener(self, Event):
         """
         add listener for job error and missed
         """
-        if event.exception:
-            logger.exception('%s error.', str(event.job))
+        job = scheduler.get_job(Event.job_id)
+        if not Event.exception:
+            logger.info(
+                f"jobname={job.name}|jobtrigger={job.trigger}|jobtime={Event.scheduled_run_time}|retval={Event.retval}")
         else:
-            logger.info('%s miss.', str(event.job))
+            logger.error(
+                f"jobname={job.name}|jobtrigger={job.trigger}|errcode={Event.code}|exception=[{Event.exception}]|traceback=[{Event.traceback}]|scheduled_time={Event.scheduled_run_time}")
