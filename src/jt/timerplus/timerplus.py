@@ -159,7 +159,7 @@ class TimerPlus(object):
         """
         add listener for job error and missed
         """
-        job = scheduler.get_job(Event.job_id)
+        job = self._sche.get_job(Event.job_id)
         if not Event.exception:
             logger.info(
                 f"jobname={job.name}|jobtrigger={job.trigger}|jobtime={Event.scheduled_run_time}|retval={Event.retval}")
