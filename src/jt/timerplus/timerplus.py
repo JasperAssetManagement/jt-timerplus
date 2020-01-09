@@ -109,7 +109,7 @@ class TimerPlus(object):
         elif job_type_ == 'sqlprocedure':
             self.__sqlprocedure_executor(job_name_, job_args_)
         elif job_type_ == 'cmd':
-            pass
+            self.__cmd_executor(job_name_, job_args_)
 
     def __matlab_executor(self, job_name_, job_args_):
         """
@@ -144,10 +144,10 @@ class TimerPlus(object):
             func()
         else:
             func(**job_args_)
-            
 
-    def __cmd_executor(self, *args, **kw):
-        pass
+    def __cmd_executor(self, job_name_, job_args_):
+        args = ' '.join(job_args_) if not job_args_ is None else ''
+        os.system(f'{job_name_} {args}')
 
     def __sqlprocedure_executor(self, job_name_, job_args_):
         assert 'db_env' in job_args_, 'db_env should be in job_args'

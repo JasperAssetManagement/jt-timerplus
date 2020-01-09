@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='jt.timerplus',
-    version='0.1.2',
+    version='1.0.0',
     description="timer plus",
     author='Neo',
     author_email='neo.lin@jaspercapital.com',
